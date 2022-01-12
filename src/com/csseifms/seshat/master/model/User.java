@@ -1,150 +1,172 @@
 package com.csseifms.seshat.master.model;
 
 import javax.persistence.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.util.List;
 import java.util.Random;
 
 @Entity
 @Table
+@Setter
+@Getter
+@NoArgsConstructor
+@ToString
+@AllArgsConstructor
 public class User {
-    @Column
-    String name, address;
-    @Column
-    City city;
-    int age;
-    //// TODO
+	@Column
+	String name;
+	@Column
+	String address;
 
-    @Column(name = "user_type")
-    String userType;
+	@Column
+	@Enumerated(EnumType.STRING)
 
-    //    @OneToMany
-//    @JoinColumn
-//    Collection<Interest> interests;
-    String interests;
+	City city;
 
-    @Column
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+	@Column
+	Integer age;
 
-    public User(String name, int age, City city) {
-        this.name = name;
-        this.age = age;
-        this.city = city;
-    }
-    private User(Builder builder) {
-        this.name = builder.name;
-        this.id = builder.id;
-        this.age = builder.age;
-        this.city = builder.city;
-        this.userType = builder.user_type;
-        this.address = builder.address;
-    }
+	@Column(name = "user_type")
+	@Enumerated(EnumType.STRING)
 
+	UserType userType;
 
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_interests", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "tag"))
 
-    public User() {
-    }
+	List<Interest> interests;
 
-    public String getName() {
-        return name;
-    }
+	@Column
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public User(String name, int age, City city) {
+		this.name = name;
+		this.age = age;
+		this.city = city;
+	}
 
-    public int getAge() {
-        return age;
-    }
+	private User(Builder builder) {
+		this.name = builder.name;
+		this.id = builder.id;
+		this.age = builder.age;
+		this.city = builder.city;
+		this.userType = builder.userType;
+		this.address = builder.address;
+		this.interests = builder.interests;
+	}
 
-    public void setAge(int age) {
-        this.age = age;
-    }
+	public static class Builder {
+		String name, address;
+		City city;
+		int age;
+		UserType userType;
+		List<Interest> interests;
+		long id;
 
-    public String getAddress() {
-        return address;
-    }
+		public Builder(String name) {
+			this.id = new Random().nextLong();
+			this.name = name;
+		}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+		public Builder age(int age) {
+			this.age = age;
+			return this;
+		}
 
-    public City getCity() {
-        return city;
-    }
+		public Builder city(City city) {
+			this.city = city;
+			return this;
+		}
 
-    public void setCity(City city) {
-        this.city = city;
-    }
+		public Builder address(String address) {
+			this.address = address;
+			return this;
+		}
 
-    //    public Collection<Interest> getInterests() {
-//        return interests;
-//    }
-//
-//    public void setInterests(Collection<Interest> interests) {
-//        this.interests = interests;
-//    }
-    public String getInterests() {
-        return interests;
-    }
+		public Builder interests(List<Interest> interests) {
+			this.interests = interests;
+			return this;
+		}
 
-    public void setInterests(String interests) {
-        this.interests = interests;
-    }
+		public Builder userType(UserType userType) {
+			this.userType = userType;
+			return this;
+		}
 
+		public User build() {
+			User user = new User(this);
+			// user.userType = UserType.BUILDER.name();
+			return user;
+		}
+	}
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", age='" + age + '\'' +
-                ", address='" + address + '\'' +
-                ", city=" + city +
-                ", type=" + userType +
-                ", interests=" + interests +
-                ", id=" + id +
-                '}';
-    }
+	public User() {
+		
+	}
 
-    public static class Builder{
-        String name, address;
-        City city;
-        int age;
-        String user_type;
-        String interests;
-        long id;
+	public String getName() {
+		return name;
+	}
 
-        public Builder(String name) {
-            this.id = new Random().nextLong();
-            this.name = name;
-        }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-        public Builder age(int age) {
-            this.age = age;
-            return this;
-        }
+	public String getAddress() {
+		return address;
+	}
 
-        public Builder city(City city) {
-            this.city = city;
-            return this;
-        }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-        public Builder address(String address) {
-            this.address = address;
-            return this;
-        }
+	public City getCity() {
+		return city;
+	}
 
-        public Builder interests(String interests) {
-            this.interests = interests;
-            return this;
-        }
+	public void setCity(City city) {
+		this.city = city;
+	}
 
-        public User build(){
-            User user = new User(this);
-            user.userType = UserType.BUILDER.name();
-            return user;
-        }
+	public Integer getAge() {
+		return age;
+	}
 
+	public void setAge(Integer age) {
+		this.age = age;
+	}
 
-    }
+	public UserType getUserType() {
+		return userType;
+	}
+
+	public void setUserType(UserType userType) {
+		this.userType = userType;
+	}
+
+	public List<Interest> getInterests() {
+		return interests;
+	}
+
+	public void setInterests(List<Interest> interests) {
+		this.interests = interests;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 }
