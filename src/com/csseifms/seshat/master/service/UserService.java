@@ -10,4 +10,8 @@ public interface UserService {
 
 	void saveUser(User user);
 
+	User getUser(long theId);
+
+	void delete(long theId);
+
 }

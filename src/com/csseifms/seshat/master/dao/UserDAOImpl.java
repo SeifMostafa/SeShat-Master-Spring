@@ -23,14 +23,18 @@ public class UserDAOImpl implements UserDAO {
 		// get current hibernate session
 		Session currentSession = sessionFactory.getCurrentSession();
 
-		// save the customer ... finally LOL
-		currentSession.save(user);
+		// save the user ... finally LOL
+		currentSession.saveOrUpdate(user);
 
 	}
 
 	@Override
-	public void getUser() {
+	public User getUser(long id) {
+		// get current hibernate session
+		Session currentSession = sessionFactory.getCurrentSession();
 
+		// save the user ... finally LOL
+		return currentSession.get(User.class, id);
 	}
 
 	@Override
@@ -43,14 +47,12 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public void updateUser(User user) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void deleteUser(Integer id) {
-		// TODO Auto-generated method stub
+	public void deleteUser(long id) {
+		Session currentSession = sessionFactory.getCurrentSession();
+		Query<User> query = currentSession.createQuery("delete from User where id=:userId");
+		query.setParameter("userId", id);
+		// save the user ... finally LOL
+		query.executeUpdate();
 
 	}
 
